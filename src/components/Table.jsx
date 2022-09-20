@@ -2,8 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 
 function Table() {
-  const { fetchPlanets, result, isLoading, error } = useContext(PlanetsContext);
-  console.log(result);
+  const { fetchPlanets, result, error } = useContext(PlanetsContext);
 
   useEffect(() => {
     async function getPlanets() {
@@ -15,7 +14,6 @@ function Table() {
 
   return (
     <div>
-      { isLoading && '⌛️' }
       <table>
         <thead>
           <tr>
