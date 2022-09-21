@@ -6,6 +6,7 @@ function PlanetsProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [error, setError] = useState('');
+  const [inputFilter, setInputFilter] = useState({ filterByName: { name: '' } });
 
   async function fetchPlanets() {
     const ENDPOINT = 'https://swapi.dev/api/planets';
@@ -28,6 +29,8 @@ function PlanetsProvider({ children }) {
     isLoading,
     result,
     error,
+    inputFilter,
+    setInputFilter,
     fetchPlanets,
   };
 
