@@ -7,6 +7,14 @@ function PlanetsProvider({ children }) {
   const [result, setResult] = useState([]);
   const [error, setError] = useState('');
   const [inputFilter, setInputFilter] = useState({ filterByName: { name: '' } });
+  const [buttonFilters, setButtonFilters] = useState({
+    column: 'population',
+    comparison: 'maior que',
+    value: 0,
+  });
+  const [filterByNumerics, setFilterByNumerics] = useState({
+    filterByNumericValues: [],
+  });
 
   async function fetchPlanets() {
     const ENDPOINT = 'https://swapi.dev/api/planets';
@@ -30,6 +38,11 @@ function PlanetsProvider({ children }) {
     result,
     error,
     inputFilter,
+    buttonFilters,
+    filterByNumerics,
+    setResult,
+    setFilterByNumerics,
+    setButtonFilters,
     setInputFilter,
     fetchPlanets,
   };
