@@ -16,26 +16,15 @@ function PlanetsProvider({ children }) {
   });
 
   useEffect(() => {
-    let mount = true;
     async function fetchPlanets() {
       const ENDPOINT = 'https://swapi.dev/api/planets';
-      if (mount) {
-        try {
-          const response = await fetch(ENDPOINT);
-          const data = await response.json();
-          const { results } = data;
-          const filteredResults = results.filter((item) => delete item.residents);
-          mount = false;
-          return setResult(filteredResults);
-        } catch (err) {
-          setError(err);
-        }
-      }
+      const response = await fetch(ENDPOINT);
+      const data = await response.json();
+      const { results } = data;
+      const filteredResults = results.filter((item) => delete item.residents);
+      return setResult(filteredResults);
     }
     fetchPlanets();
-    return () => {
-      if (!mount) return console.log('entrou');
-    };
   }, []);
 
   const contextType = {

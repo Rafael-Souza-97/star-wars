@@ -26,8 +26,6 @@ function Table() {
     .filter((element) => !filterByNumerics.filterByNumericValues
       .find(({ column }) => element === column));
 
-  console.log('renderização :  ', columnFilter);
-
   let filteredPlanetsInput = result.filter((planet) => planet.name.toLowerCase()
     .includes(inputFilter.filterByName.name.toLowerCase()));
 
@@ -42,7 +40,6 @@ function Table() {
       if (comparison === 'igual a') {
         return Number(item[column]) === Number(value);
       }
-      return null;
     });
   });
 
@@ -65,7 +62,6 @@ function Table() {
     }));
   };
 
-  console.log(columnFilter[0]);
   return (
     <>
       <div>
@@ -179,3 +175,4 @@ function Table() {
 }
 
 export default Table;
+// Refatorado com ajuda do Wayne
