@@ -1,25 +1,50 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 
 function Table() {
   const {
-    fetchPlanets,
     result,
     inputFilter,
     buttonFilters,
-    setResult,
+    filterByNumerics,
     setInputFilter,
     setButtonFilters,
     setFilterByNumerics,
   } = useContext(PlanetsContext);
 
-  useEffect(() => {
-    async function getPlanets() {
-      const fetch = await fetchPlanets();
-      return fetch;
-    }
-    getPlanets();
-  }, []);
+  const columnFilterOriginal = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ];
+
+  let columnFilter = columnFilterOriginal;
+
+  columnFilter = columnFilter
+    .filter((element) => !filterByNumerics.filterByNumericValues
+      .find(({ column }) => element === column));
+
+  console.log('renderização :  ', columnFilter);
+
+  let filteredPlanetsInput = result.filter((planet) => planet.name.toLowerCase()
+    .includes(inputFilter.filterByName.name.toLowerCase()));
+
+  filterByNumerics.filterByNumericValues.forEach(({ column, comparison, value }) => {
+    filteredPlanetsInput = filteredPlanetsInput.filter((item) => {
+      if (comparison === 'maior que') {
+        return Number(item[column]) > Number(value);
+      }
+      if (comparison === 'menor que') {
+        return Number(item[column]) < Number(value);
+      }
+      if (comparison === 'igual a') {
+        return Number(item[column]) === Number(value);
+      }
+      return null;
+    });
+  });
 
   const handleChange = ({ target }) => {
     setInputFilter({ filterByName: { name: target.value } });
@@ -34,32 +59,13 @@ function Table() {
     });
   };
 
-  useEffect(() => {
-    setFilterByNumerics({
-      filterByNumericValues: [buttonFilters],
-    });
-  }, [buttonFilters]);
-
-  let filteredPlanetsInput = result.filter((planet) => planet.name.toLowerCase()
-    .includes(inputFilter.filterByName.name.toLowerCase()));
-
   const handleClick = () => {
-    const { column, comparison, value } = buttonFilters;
-    if (comparison === 'maior que') {
-      filteredPlanetsInput = result
-        .filter((item) => Number(item[column]) > Number(value));
-    }
-    if (comparison === 'menor que') {
-      filteredPlanetsInput = result
-        .filter((item) => Number(item[column]) < Number(value));
-    }
-    if (comparison === 'igual a') {
-      filteredPlanetsInput = result
-        .filter((item) => Number(item[column]) === Number(value));
-    }
-    setResult(filteredPlanetsInput);
+    setFilterByNumerics((prevstate) => ({
+      filterByNumericValues: [...prevstate.filterByNumericValues, buttonFilters],
+    }));
   };
 
+  console.log(columnFilter[0]);
   return (
     <>
       <div>
@@ -80,15 +86,13 @@ function Table() {
           <select
             id="column"
             name="column"
-            value={ buttonFilters.column }
             onChange={ handleFilters }
             data-testid="column-filter"
           >
-            <option defaultValue value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            { columnFilter
+              .map((item, index) => (
+                <option key={ index } value={ item }>{ item }</option>
+              ))}
           </select>
         </label>
       </div>

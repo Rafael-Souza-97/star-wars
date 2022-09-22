@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import PlanetsContext from './PlanetsContext';
 
 function PlanetsProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [error, setError] = useState('');
   const [inputFilter, setInputFilter] = useState({ filterByName: { name: '' } });
@@ -16,25 +15,30 @@ function PlanetsProvider({ children }) {
     filterByNumericValues: [],
   });
 
-  async function fetchPlanets() {
-    const ENDPOINT = 'https://swapi.dev/api/planets';
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(ENDPOINT);
-      const data = await response.json();
-      const { results } = data;
-      const filteredResults = results.filter((item) => delete item.residents);
-      setResult(filteredResults);
-      setIsLoading(false);
-    } catch (err) {
-      setError(err);
-      setIsLoading(false);
+  useEffect(() => {
+    let mount = true;
+    async function fetchPlanets() {
+      const ENDPOINT = 'https://swapi.dev/api/planets';
+      if (mount) {
+        try {
+          const response = await fetch(ENDPOINT);
+          const data = await response.json();
+          const { results } = data;
+          const filteredResults = results.filter((item) => delete item.residents);
+          mount = false;
+          return setResult(filteredResults);
+        } catch (err) {
+          setError(err);
+        }
+      }
     }
-  }
+    fetchPlanets();
+    return () => {
+      if (!mount) return console.log('entrou');
+    };
+  }, []);
 
   const contextType = {
-    isLoading,
     result,
     error,
     inputFilter,
@@ -44,7 +48,6 @@ function PlanetsProvider({ children }) {
     setFilterByNumerics,
     setButtonFilters,
     setInputFilter,
-    fetchPlanets,
   };
 
   return (
