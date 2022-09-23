@@ -40,6 +40,7 @@ function Table() {
       if (comparison === 'igual a') {
         return Number(item[column]) === Number(value);
       }
+      return filteredPlanetsInput;
     });
   });
 

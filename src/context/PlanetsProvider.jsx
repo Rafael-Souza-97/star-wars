@@ -4,7 +4,6 @@ import PlanetsContext from './PlanetsContext';
 
 function PlanetsProvider({ children }) {
   const [result, setResult] = useState([]);
-  const [error, setError] = useState('');
   const [inputFilter, setInputFilter] = useState({ filterByName: { name: '' } });
   const [buttonFilters, setButtonFilters] = useState({
     column: 'population',
@@ -29,7 +28,6 @@ function PlanetsProvider({ children }) {
 
   const contextType = {
     result,
-    error,
     inputFilter,
     buttonFilters,
     filterByNumerics,
